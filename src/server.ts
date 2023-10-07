@@ -2,6 +2,8 @@ import fastify from "fastify";
 import {politicsRoute} from "./routes/politics";
 import cors from "@fastify/cors";
 import multer from 'fastify-multer'
+import {votersRoute} from "./routes/voters";
+
 const app = fastify()
 
 app.register(cors, {
@@ -13,11 +15,13 @@ app.register(cors, {
 
 app.register(multer.contentParser)
 
-// registro de rotas
 app.register(politicsRoute, {
     prefix: '/politics',
 })
 
+app.register(votersRoute,{
+    prefix: '/voters',
+})
 
 // Startando o servidor
 app.listen({

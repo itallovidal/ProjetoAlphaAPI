@@ -1,9 +1,9 @@
 import {collection, addDoc} from "firebase/firestore";
 import {db} from "../../index";
-import {IUser} from "../../../routes/politics";
+import {IVoter} from "../../../@types/interfaces";
 
 
-export async function registerUser(collection_id: string, user: IUser){
+export async function registerVoter(collection_id: string, user: IVoter){
     const colRef = collection(db, `politicos/${collection_id}/cadastrados`)
     await addDoc(colRef, user)
     return true

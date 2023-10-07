@@ -1,3 +1,6 @@
+import {z} from "zod";
+import {voterSchema} from "../routes/schemas";
+
 interface IPartido{
     img_logo: string,
     img_qrCode: string,
@@ -13,3 +16,5 @@ export interface IPolitic{
     senha: string,
     telefone: string
 }
+
+export interface IVoter extends z.infer<typeof voterSchema>{}
