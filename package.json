@@ -11,11 +11,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cors": "^2.8.14",
     "@types/node": "^20.7.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@fastify/cors": "^8.4.0",
+    "cors": "^2.8.5",
     "fastify": "^4.23.2",
+    "fastify-multer": "^2.0.3",
     "firebase": "^10.4.0",
     "tsx": "^3.13.0",
     "zod": "^3.22.2"

@@ -1,6 +1,6 @@
-import {collection, getDocs, addDoc} from "firebase/firestore";
-import {db} from "../index";
-import {IUser} from "../../routes/politics";
+import {collection, addDoc} from "firebase/firestore";
+import {db} from "../../index";
+import {IUser} from "../../../routes/politics";
 
 
 export async function registerUser(collection_id: string, user: IUser){

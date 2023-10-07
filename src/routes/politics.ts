@@ -1,17 +1,25 @@
 import {FastifyInstance} from "fastify";
-import {getAllPolitics} from "../database/querys/getAllPolitics";
-import {getSpecificPolitic} from "../database/querys/getSpecificPolitic";
-import {z} from 'zod'
-import {getAllRegisteredUsers} from "../database/querys/getAllRegisteredUsers";
-import {registerUser} from "../database/querys/registerUser";
+import {getAllPolitics} from "../database/querys/GET/getAllPolitics";
+import {getSpecificPolitic} from "../database/querys/GET/getSpecificPolitic";
+import { z } from 'zod'
+import {getAllRegisteredUsers} from "../database/querys/GET/getAllRegisteredUsers";
+import {registerUser} from "../database/querys/POST/registerUser";
+import {getCountRegisteredUsers} from "../database/querys/GET/getCountRegisteredUsers";
+import {upload} from "../multer/multerConfig";
+
+import {ref, uploadBytes,  getDownloadURL} from 'firebase/storage'
+import {storage} from '../database'
+import {createPolitc} from "../database/querys/POST/createPolitc";
+
 
 
 const politicQuerySchema = z.object({
-    id: z.string().uuid()
+    name: z.string(),
+    password: z.string()
 })
 
 const firebaseIdCollection = z.object({
-    id: z.string().min(15)
+    collection_id: z.string().min(15)
 })
 
 const userSchema = z.object({
@@ -42,6 +50,15 @@ const userSchema = z.object({
     })
 })
 
+const createPolitcSchema = z.object({
+    email: z.string(),
+    nome: z.string(),
+    senha: z.string(),
+    telefone: z.string(),
+    nome_partido: z.string(),
+    sigla_partido: z.string(),
+})
+
 export interface IUser extends z.infer<typeof userSchema>{}
 
 export async function politicsRoute(app: FastifyInstance){
@@ -54,20 +71,20 @@ export async function politicsRoute(app: FastifyInstance){
     })
 
     // pega informacoes de um politico específico
-    app.get('/:id', async (request)=>{
-        const {id} = politicQuerySchema.parse(request.params)
+    app.post('/:id', async (request, reply)=>{
+        const {name, password} = politicQuerySchema.parse(request.body)
+        const doc = await getSpecificPolitic(name, password).catch(()=>{
+            return reply.status(404).send()
+        })
 
-        const docs = await getSpecificPolitic(id)
-
-        return {
-            docs
-        }
+        return doc
     })
 
     // pega todos os usuários cadastrados de um político específico
-    app.get('/:id/registers', async (request)=>{
-        const {id} = firebaseIdCollection.parse(request.params)
-        const docs = await getAllRegisteredUsers(id)
+    // OBS.: fornecer o id da colecão
+    app.get('/:collection_id/registers', async (request)=>{
+        const {collection_id} = firebaseIdCollection.parse(request.params)
+        const docs = await getAllRegisteredUsers(collection_id)
 
         return {
             docs
@@ -75,11 +92,57 @@ export async function politicsRoute(app: FastifyInstance){
     })
 
     // rota de POST de usuário
-    app.post('/:id/registration', async (request, response)=>{
-        const {id} = firebaseIdCollection.parse(request.params)
+    app.post('/:collection_id/registration', async (request, response)=>{
+        const {collection_id} = firebaseIdCollection.parse(request.params)
         const user = userSchema.parse(request.body)
+        await registerUser(collection_id, user)
+        response.status(201)
+        return response.send()
+    })
 
-        await registerUser(id, user)
-        return response.status(201).send
+    // rota get
+    app.get('/:collection_id/registerCount', async (request)=>{
+        const {collection_id} = firebaseIdCollection.parse(request.params)
+        const count = await getCountRegisteredUsers(collection_id)
+
+        return count
+    })
+
+    app.post('/create',
+        {
+            preHandler: upload.single('qrCode')
+        },
+        async (request, reply)=>{
+            const body = createPolitcSchema.parse(request.body)
+
+            const image = request.file
+            console.log('=>')
+            console.log(image)
+
+            const fileType = image.mimetype.slice(6)
+            const storageRef = ref(storage, `politicos/${crypto.randomUUID()}.${fileType}`)
+
+            console.log('criou ref do armazenamento')
+
+            const snapshot = await  uploadBytes(storageRef, image.buffer)
+            const url = await getDownloadURL(snapshot.ref)
+
+            await createPolitc({
+                email: body.email,
+                nome: body.nome,
+                senha: body.senha,
+                telefone: body.telefone,
+                partido:{
+                    img_qrCode: url,
+                    img_logo: '',
+                    nome: body.nome_partido,
+                    sigla: body.sigla_partido,
+                }
+            })
+
+            reply.status(201)
+            return {
+                message: "político criado certinho"
+            }
     })
 }
