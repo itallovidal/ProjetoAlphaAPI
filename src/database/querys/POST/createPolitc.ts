@@ -2,12 +2,8 @@ import {addDoc, collection} from "firebase/firestore";
 import {db} from "../../index";
 import {IPolitic} from "../../../@types/interfaces";
 
-export async function createPolitc(data: Omit<IPolitic, "id">){
+export async function createPolitic(data: IPolitic){
     const usersCollection = collection(db, "politicos");
-    const response = await addDoc(usersCollection, {
-        id: crypto.randomUUID(),
-        ...data
-    })
-
+    const response = await addDoc(usersCollection, data)
     return response
 }

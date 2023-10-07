@@ -2,12 +2,11 @@ import {FastifyInstance} from "fastify";
 
 import {getSpecificPolitic} from "../database/querys/GET/getSpecificPolitic";
 import {getAllPolitics} from "../database/querys/GET/getAllPolitics";
-import {createPolitc} from "../database/querys/POST/createPolitc";
-import {getDownloadURL, ref, uploadBytes} from 'firebase/storage'
-import {storage} from '../database'
+import {createPolitic} from "../database/querys/POST/createPolitc";
 
 import {upload} from "../multer/multerConfig";
 import {createPoliticSchema, politicQuerySchema,} from "./schemas";
+import {storeFile} from "../database/querys/POST/StoreFile";
 
 
 export async function politicsRoute(app: FastifyInstance){
@@ -31,35 +30,36 @@ export async function politicsRoute(app: FastifyInstance){
     // POST de um político (criação)
     app.post('/',
         {
-            preHandler: upload.single('partido_qrCode')
+            preHandler: upload.fields([
+                {name: 'qrCode_image', maxCount: 1},
+                {name: 'profile_image', maxCount: 1}
+            ])
         },
         async (request, reply)=>{
             const body = createPoliticSchema.parse(request.body)
+            const id = crypto.randomUUID()
 
-            const image = request.file
-            console.log('=>')
-            console.log(image)
+            const qrCode_image = request.files.qrCode_image[0]
+            const profile_image = request.files.profile_image[0]
 
-            const fileType = image.mimetype.slice(6)
-            const storageRef = ref(storage, `politicos/${crypto.randomUUID()}.${fileType}`)
+            const qrCodePath = await storeFile(qrCode_image, id)
+            const profileImagePath = await storeFile(profile_image, id)
 
-            console.log('criou ref do armazenamento')
-
-            const snapshot = await  uploadBytes(storageRef, image.buffer)
-            const url = await getDownloadURL(snapshot.ref)
-
-            await createPolitc({
+            const data = {
+                id: id,
                 email: body.email,
                 nome: body.nome,
                 senha: body.senha,
                 telefone: body.telefone,
-                partido:{
-                    img_qrCode: url,
-                    img_logo: '',
+                profile_image: profileImagePath,
+                qrCode_image: qrCodePath,
+                partido: {
                     nome: body.partido_nome,
-                    sigla: body.partido_sigla,
-                }
-            })
+                    sigla: body.partido_sigla
+                },
+            }
+
+            await createPolitic(data)
 
             reply.status(201)
             return {
