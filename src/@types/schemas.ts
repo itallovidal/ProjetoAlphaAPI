@@ -1,10 +1,9 @@
 import {z} from "zod";
 
-export const politicQuerySchema = z.object({
+export const loginQuerySchema = z.object({
     name: z.string(),
     password: z.string()
 })
-
 
 export const firebaseIdCollection = z.object({
     collection_id: z.string().min(15)
@@ -46,4 +45,11 @@ export const createPoliticSchema = z.object({
     telefone: z.string(),
     partido_nome: z.string(),
     partido_sigla: z.string(),
+    siteInstitucional: z.string(),
+    facebook: z.string(),
+    instagram: z.string()
+})
+
+export const searchPoliticSchema = z.object({
+    id: z.string().uuid()
 })

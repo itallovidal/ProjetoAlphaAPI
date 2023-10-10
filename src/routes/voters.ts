@@ -2,7 +2,7 @@ import {getCountRegisteredVoters} from "../database/querys/GET/getCountRegistere
 import {getAllRegisteredVoters} from "../database/querys/GET/getAllRegisteredVoters";
 import {registerVoter} from "../database/querys/POST/registerVoter";
 
-import {firebaseIdCollection, voterSchema} from "./schemas";
+import {firebaseIdCollection, voterSchema} from "../@types/schemas";
 import {FastifyInstance} from "fastify";
 
 export async function votersRoute(app: FastifyInstance){
