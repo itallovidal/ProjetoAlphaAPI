@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": ">="
+  },
   "scripts": {
     "dev": "tsx src/server.ts",
     "build": "tsup src --out-dir build"
