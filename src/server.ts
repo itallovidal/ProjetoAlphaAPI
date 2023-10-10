@@ -32,6 +32,7 @@ app.register(votersRoute,{
 // Startando o servidor
 app.listen({
     host: '0.0.0.0',
+    port: 3333
 }).then(()=>{
     console.log(`Server is currently running.`)
 })
