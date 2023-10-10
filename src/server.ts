@@ -15,6 +15,12 @@ app.register(cors, {
 
 app.register(multer.contentParser)
 
+app.get('/', async ()=>{
+    return {
+        message: "API no ar!"
+    }
+})
+
 app.register(politicsRoute, {
     prefix: '/politics',
 })
@@ -25,7 +31,7 @@ app.register(votersRoute,{
 
 // Startando o servidor
 app.listen({
-    port: 3333
+    host: '0.0.0.0',
 }).then(()=>{
     console.log(`Server is currently running.`)
 })
