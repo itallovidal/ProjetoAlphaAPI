@@ -4,32 +4,102 @@ import {registerVoter} from "../database/querys/POST/registerVoter";
 
 import {firebaseIdCollection, voterSchema} from "../@types/schemas";
 import {FastifyInstance} from "fastify";
+import {getPoliticByCollection} from "../database/querys/GET/getPoliticByCollection";
 
 export async function votersRoute(app: FastifyInstance){
     // GET de usuários cadastrados em um político específico
     // OBS.: fornecer o id da coleção do político
-    app.get('/:collection_id', async (request)=>{
-        const {collection_id} = firebaseIdCollection.parse(request.params)
-        const docs = await getAllRegisteredVoters(collection_id)
-        return {
-            docs
+    app.get('/:collection_id', async (request, reply)=>{
+        const collectionParsed = firebaseIdCollection.safeParse(request.params)
+
+        if(collectionParsed.success){
+            const {collection_id} = collectionParsed.data
+
+            await getPoliticByCollection(collection_id)
+                .catch(()=>{
+                    reply.status(400).send({
+                        message: "Político não existe no banco. Você está tentando capturar votantes de um político inexistente?",
+                        status: 400
+                    })
+                })
+
+            const docs = await getAllRegisteredVoters(collection_id)
+
+            return {
+                docs
+            }
         }
+
+        reply.status(400).send({
+            message: "ID da coleção enviada errado.",
+            status: 400
+        })
+
     })
 
     // POST de um votante em uma colecao (criação)
-    app.post('/:collection_id', async (request, response)=>{
-        const {collection_id} = firebaseIdCollection.parse(request.params)
-        const user = voterSchema.parse(request.body)
-        await registerVoter(collection_id, user)
-        response.status(201)
-        return response.send()
+    app.post('/:collection_id', async (request, reply)=>{
+        const collectionParsed = firebaseIdCollection.safeParse(request.params)
+        const userParsed = voterSchema.safeParse(request.body)
+
+        if(collectionParsed.success){
+            if(userParsed.success){
+                const {collection_id} = collectionParsed.data
+
+                await getPoliticByCollection(collection_id)
+                    .catch(()=>{
+                        reply.status(400).send({
+                            message: "Político não existe no banco. Você está tentando adicionar um votante em um político inexistente?",
+                            status: 400
+                        })
+                    })
+
+                const user = userParsed.data
+
+                await registerVoter(collection_id, user).catch(()=>{
+                    reply.status(400).send({
+                        message: "Erro no cadastro do votante na coleção do político.",
+                        status: 400
+                    })
+                })
+
+                reply.status(201).send({
+                    message: "Usuário cadastrado.",
+                    status: 201
+                })
+            }
+
+            reply.status(400).send({
+                message: "JSON com as informações do usuário enviado errado.",
+                status: 400
+            })
+        }
+
+        reply.status(400).send({
+            message: "ID da coleção enviada errado.",
+            status: 400
+        })
+
     })
 
     // GET da quantidade de registros
-    app.get('/:collection_id/votersCount', async (request)=>{
-        const {collection_id} = firebaseIdCollection.parse(request.params)
-        const count = await getCountRegisteredVoters(collection_id)
+    app.get('/:collection_id/votersCount', async (request, reply)=>{
+        const collectionParsed = firebaseIdCollection.safeParse(request.params)
 
-        return count
+        if(collectionParsed.success){
+            const {collection_id} = collectionParsed.data
+
+            return await getCountRegisteredVoters(collection_id).catch(()=>{
+                reply.status(500).send({
+                    status: 500,
+                    message: "Erro ao capturar a quantidade de votantes."
+                })
+            })
+        }
+
+        reply.status(400).send({
+            status: 400,
+            message: "ID Da coleção errado. Você está na rota certa?"
+        })
     })
 }

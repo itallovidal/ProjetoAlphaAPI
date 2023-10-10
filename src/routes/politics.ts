@@ -1,6 +1,6 @@
 import {FastifyInstance} from "fastify";
 
-import {getSpecificPolitic} from "../database/querys/GET/getSpecificPolitic";
+import {getPoliticById} from "../database/querys/GET/getPoliticById";
 import {getAllPolitics} from "../database/querys/GET/getAllPolitics";
 import {createPolitic} from "../database/querys/POST/createPolitc";
 
@@ -31,7 +31,7 @@ export async function politicsRoute(app: FastifyInstance){
 
         if(parsedData.success){
             const { id } = parsedData.data
-            const data = await getSpecificPolitic(id)
+            const data = await getPoliticById(id)
                 .catch(() => {
                     console.log('Político não encontrado no banco.')
                     reply.status(404)
