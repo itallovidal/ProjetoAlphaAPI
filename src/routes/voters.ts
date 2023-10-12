@@ -2,18 +2,19 @@ import {getCountRegisteredVoters} from "../database/querys/GET/getCountRegistere
 import {getAllRegisteredVoters} from "../database/querys/GET/getAllRegisteredVoters";
 import {registerVoter} from "../database/querys/POST/registerVoter";
 
-import {firebaseIdCollection, voterSchema} from "../@types/schemas";
+import {firebaseIdCollection, getVotersSchema, voterSchema} from "../@types/schemas";
 import {FastifyInstance} from "fastify";
 import {getPoliticByCollection} from "../database/querys/GET/getPoliticByCollection";
 
 export async function votersRoute(app: FastifyInstance){
     // GET de usuários cadastrados em um político específico
     // OBS.: fornecer o id da coleção do político
-    app.get('/:collection_id', async (request, reply)=>{
-        const collectionParsed = firebaseIdCollection.safeParse(request.params)
+    app.get('/:collection_id/:page', async (request, reply)=>{
+        const getVotersParsed = getVotersSchema.safeParse(request.params)
+        console.log(request.params)
 
-        if(collectionParsed.success){
-            const {collection_id} = collectionParsed.data
+        if(getVotersParsed.success){
+            const {collection_id, page} = getVotersParsed.data
 
             await getPoliticByCollection(collection_id)
                 .catch(()=>{
@@ -23,7 +24,7 @@ export async function votersRoute(app: FastifyInstance){
                     })
                 })
 
-            const docs = await getAllRegisteredVoters(collection_id)
+            const docs = await getAllRegisteredVoters(collection_id, page)
 
             return {
                 docs
@@ -31,7 +32,7 @@ export async function votersRoute(app: FastifyInstance){
         }
 
         reply.status(400).send({
-            message: "ID da coleção enviada errado.",
+            message: "ID da coleção enviada errado. Ou falta o start.",
             status: 400
         })
 

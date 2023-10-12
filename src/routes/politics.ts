@@ -105,7 +105,7 @@ export async function politicsRoute(app: FastifyInstance){
                 qrCode_image: qrCodePath,
                 siteInstitucional: body.siteInstitucional,
                 facebook: body.facebook,
-                instagram: body.instagram,
+                linkedin: body.linkedin,
                 partido: {
                     nome: body.partido_nome,
                     sigla: body.partido_sigla

@@ -9,6 +9,11 @@ export const firebaseIdCollection = z.object({
     collection_id: z.string().min(15)
 })
 
+export const getVotersSchema = z.object({
+    collection_id: z.string().min(15),
+    page: z.coerce.number().min(0)
+})
+
 export const voterSchema = z.object({
     nome:   z.string()
         .min(3, {message:"Mínimo de 3 caracteres."}),
@@ -47,7 +52,7 @@ export const createPoliticSchema = z.object({
     partido_sigla: z.string(),
     siteInstitucional: z.string(),
     facebook: z.string(),
-    instagram: z.string()
+    linkedin: z.string()
 })
 
 export const searchPoliticSchema = z.object({

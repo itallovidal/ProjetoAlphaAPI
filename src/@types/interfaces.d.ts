@@ -17,7 +17,7 @@ export interface IPolitic{
     qrCode_image: string,
     siteInstitucional: string,
     facebook: string,
-    instagram: string,
+    linkedin: string,
 }
 
 export interface IVoter extends z.infer<typeof voterSchema>{}
