@@ -11,7 +11,7 @@ export const firebaseIdCollection = z.object({
 
 export const getVotersSchema = z.object({
     collection_id: z.string().min(15),
-    page: z.coerce.number().min(0)
+    lastDoc: z.coerce.number().min(0)
 })
 
 export const voterSchema = z.object({

@@ -9,12 +9,12 @@ import {getPoliticByCollection} from "../database/querys/GET/getPoliticByCollect
 export async function votersRoute(app: FastifyInstance){
     // GET de usuários cadastrados em um político específico
     // OBS.: fornecer o id da coleção do político
-    app.get('/:collection_id/:page', async (request, reply)=>{
+    app.get('/:collection_id/:lastDoc', async (request, reply)=>{
         const getVotersParsed = getVotersSchema.safeParse(request.params)
         console.log(request.params)
 
         if(getVotersParsed.success){
-            const {collection_id, page} = getVotersParsed.data
+            const {collection_id, lastDoc} = getVotersParsed.data
 
             await getPoliticByCollection(collection_id)
                 .catch(()=>{
@@ -24,7 +24,7 @@ export async function votersRoute(app: FastifyInstance){
                     })
                 })
 
-            const docs = await getAllRegisteredVoters(collection_id, page)
+            const docs = await getAllRegisteredVoters(collection_id, lastDoc)
 
             return {
                 docs
