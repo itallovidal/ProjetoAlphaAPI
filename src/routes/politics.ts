@@ -57,8 +57,8 @@ export async function politicsRoute(app: FastifyInstance){
         const loginQueryParsed = loginQuerySchema.safeParse(request.body)
 
         if(loginQueryParsed.success){
-            const {name, password} = loginQueryParsed.data
-            return await loginPolitic(name, password)
+            const {email, password} = loginQueryParsed.data
+            return await loginPolitic(email, password)
                 .catch((e: Error) => {
                     if (typeof e.cause === 'object' && e.cause && "userNotFound" in e.cause) {
                         if (e.cause.userNotFound) {
@@ -74,7 +74,7 @@ export async function politicsRoute(app: FastifyInstance){
         reply.status(400)
             .send({
                 status: 400,
-                message: "JSON enviado errado. Campos 'name' e 'password' obrigatórios."
+                message: "JSON enviado errado. Campos 'email' e 'password' obrigatórios."
             })
     })
 

@@ -1,11 +1,11 @@
 import {collection, getDocs, query, where} from "firebase/firestore";
 import {db} from "../../index";
 
-export async function loginPolitic(name: string, password: string){
+export async function loginPolitic(email: string, password: string){
     const colRef = collection(db, 'politicos')
     const q = query(
         colRef,
-        where('nome','==', name),
+        where('nome','==', email),
         where('senha', '==', password)
     )
 
