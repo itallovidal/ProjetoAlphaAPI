@@ -5,7 +5,7 @@ export async function loginPolitic(email: string, password: string){
     const colRef = collection(db, 'politicos')
     const q = query(
         colRef,
-        where('email','==', email),
+        where('email','==', email.toLowerCase()),
         where('senha', '==', password)
     )
 

@@ -89,7 +89,7 @@ export async function politicsRoute(app: FastifyInstance){
             const body = createPoliticSchema.parse(request.body)
             const id = crypto.randomUUID()
 
-            const qrCodePath = await createQrCode(id)
+            const {qrCodeURl, URL} = await createQrCode(id)
 
             // @ts-ignore
             const profile_image = request.files.profile_image[0]
@@ -97,12 +97,13 @@ export async function politicsRoute(app: FastifyInstance){
 
             const data = {
                 id: id,
-                email: body.email,
+                email: body.email.toLowerCase(),
                 nome: body.nome,
                 senha: body.senha,
                 telefone: body.telefone,
                 profile_image: profileImagePath,
-                qrCode_image: qrCodePath,
+                qrCode_image: qrCodeURl,
+                URLCadastro: URL,
                 siteInstitucional: body.siteInstitucional,
                 facebook: body.facebook,
                 linkedin: body.linkedin,

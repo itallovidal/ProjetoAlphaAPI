@@ -18,6 +18,7 @@ export interface IPolitic{
     siteInstitucional: string,
     facebook: string,
     linkedin: string,
+    URLCadastro: string
 }
 
 export interface IVoter extends z.infer<typeof voterSchema>{}
