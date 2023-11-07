@@ -26,18 +26,13 @@ export const voterSchema = z.object({
         .nonempty({message:"Digite o número de celular."}),
 
     endereco: z.object({
-        cep:   z.string().min(8, {message: 'CEP precisa de 8 caracteres.'})
-            .max(8,{message: 'Máximo de 8 caracteres.'})
-            .regex(/\d{5}\d{3}/, {message: 'Digite um cep válido'}),
-        bairro: z.string()
-            .min(3, {message:"Mínimo de 3 caracteres."}),
+        cep:   z.string().or(z.null()),
+        bairro: z.string().or(z.null()),
+        rua: z.string().or(z.null()),
         uf: z.string({
             required_error: 'Escreva o uf'
         }).min(2, {message: 'Mínimo de 2 caracteres.'})
             .max(2, {message: 'Máximo de 2 caracteres.'}),
-        rua: z.string({
-            required_error: 'Digite a rua, por favor.'
-        }).min(3,  {message: 'Pelo menos 3 caracteres.'}),
         cidade: z.string().nonempty({message: 'Por favor, coloque a cidade.'})
     })
 })

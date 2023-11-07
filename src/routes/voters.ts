@@ -55,7 +55,19 @@ export async function votersRoute(app: FastifyInstance){
                         })
                     })
 
-                const user = userParsed.data
+                let user = userParsed.data
+
+                if(user.endereco.cep === ""){
+                    user.endereco.cep = null
+                }
+
+                if(user.endereco.rua === ""){
+                    user.endereco.rua = null
+                }
+
+                if(user.endereco.bairro === ""){
+                    user.endereco.bairro = null
+                }
 
                 await registerVoter(collection_id, user).catch(()=>{
                     reply.status(400).send({
