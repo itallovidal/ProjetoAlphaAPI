@@ -108,6 +108,7 @@ export async function politicsRoute(app: FastifyInstance){
                 facebook: body.facebook,
                 linkedin: body.linkedin,
                 instagram: body.instagram,
+                youtube: body.youtube,
                 partido: {
                     nome: body.partido_nome,
                     sigla: body.partido_sigla
