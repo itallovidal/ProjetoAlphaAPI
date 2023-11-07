@@ -45,9 +45,11 @@ export const createPoliticSchema = z.object({
     telefone: z.string(),
     partido_nome: z.string(),
     partido_sigla: z.string(),
-    siteInstitucional: z.string(),
-    facebook: z.string(),
-    linkedin: z.string()
+    siteInstitucional: z.string().or(z.null()).default(null),
+    facebook: z.string().or(z.null()).default(null),
+    linkedin: z.string().or(z.null()).default(null),
+    youtube: z.string().or(z.null()).default(null),
+    instagram: z.string().or(z.null()).default(null),
 })
 
 export const searchPoliticSchema = z.object({

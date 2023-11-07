@@ -15,9 +15,10 @@ export interface IPolitic{
     telefone: string,
     profile_image: string,
     qrCode_image: string,
-    siteInstitucional: string,
-    facebook: string,
-    linkedin: string,
+    siteInstitucional: string |  null,
+    instagram: string |  null
+    facebook: string |  null,
+    linkedin: string |  null,
     URLCadastro: string
 }
 
