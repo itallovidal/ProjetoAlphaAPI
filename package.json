@@ -20,14 +20,15 @@
     "tsup": "^7.2.0"
   },
   "dependencies": {
-    "typescript": "^5.2.2",
     "@fastify/cors": "^8.4.0",
     "aws-lambda-fastify": "^2.2.0",
     "cors": "^2.8.5",
     "fastify": "^4.23.2",
     "fastify-multer": "^2.0.3",
     "firebase": "^10.4.0",
+    "serverless-http": "^3.2.0",
     "tsx": "^3.13.0",
+    "typescript": "^5.2.2",
     "zod": "^3.22.2"
   }
 }

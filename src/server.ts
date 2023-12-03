@@ -4,6 +4,7 @@ import cors from "@fastify/cors";
 import multer from 'fastify-multer'
 import {votersRoute} from "./routes/voters";
 
+
 const app = fastify()
 
 app.register(cors, {
@@ -36,3 +37,4 @@ app.listen({
 }).then(()=>{
     console.log(`Server is currently running.`)
 })
+
