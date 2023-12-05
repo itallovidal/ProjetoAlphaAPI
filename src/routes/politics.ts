@@ -12,6 +12,10 @@ import {createQrCode} from "../utilities/createQrCode";
 
 
 export async function politicsRoute(app: FastifyInstance){
+    app.get('/teste', ()=>{
+        return "teste!"
+    })
+
     // GET de todos os políticos
     app.get(`/`, async (request, reply)=>{
         const docs = await getAllPolitics().catch(()=>{
