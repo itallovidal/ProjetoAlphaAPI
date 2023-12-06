@@ -7,7 +7,6 @@
     "node": ">=18"
   },
   "scripts": {
-    "postinstall": "tsc",
     "dev": "tsx src/server.ts",
     "build": "tsup src --out-dir build"
   },

@@ -10,6 +10,9 @@ const storeFile_1 = require("../database/querys/POST/storeFile");
 const loginPolitic_1 = require("../database/querys/POST/loginPolitic");
 const createQrCode_1 = require("../utilities/createQrCode");
 async function politicsRoute(app) {
+    app.get('/teste', () => {
+        return "teste!";
+    });
     // GET de todos os políticos
     app.get(`/`, async (request, reply) => {
         const docs = await (0, getAllPolitics_1.getAllPolitics)().catch(() => {

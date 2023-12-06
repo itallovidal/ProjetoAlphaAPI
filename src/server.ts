@@ -3,13 +3,9 @@ import {politicsRoute} from "./routes/politics";
 import cors from "@fastify/cors";
 import multer from 'fastify-multer'
 import {votersRoute} from "./routes/voters";
-// @ts-ignore
-import awsLambdaFastify from "@fastify/aws-lambda";
 
-const app = fastify({
-    logger: true
-})
 
+const app = fastify();
 
 app.register(cors, {
     origin: "*",
@@ -35,26 +31,16 @@ app.register(votersRoute,{
 })
 
 
-app.get('/rotaTeste', ()=>{
+app.get('/teste', ()=>{
     return "ficarei calvo aos 25 assim"
 })
 
-const proxy = awsLambdaFastify(app);
-
-export async function handler(event: any, context: any) {
-    return await proxy(event, context);
-}
-
-
-
-
 // Startando o servidor
 
-// não precisamos startar o servidor com a aws
-// app.listen({
-//     host: '0.0.0.0',
-//     port: 3333
-// }).then(()=>{
-//     console.log(`Server is currently running.`)
-// })
+app.listen({
+    host: '0.0.0.0',
+    port: 3333
+}).then(()=>{
+    console.log(`Server is currently running.`)
+})
 
