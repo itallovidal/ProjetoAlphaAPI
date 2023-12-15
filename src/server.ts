@@ -5,7 +5,7 @@ import multer from 'fastify-multer'
 import {votersRoute} from "./routes/voters";
 
 
-const app = fastify();
+export const app = fastify();
 
 app.register(cors, {
     origin: "*",
