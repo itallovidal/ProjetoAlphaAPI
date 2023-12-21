@@ -38,7 +38,7 @@ export const voterSchema = z.object({
 })
 
 
-export const createPoliticSchema = z.object({
+export const politicSchema = z.object({
     email: z.string(),
     nome: z.string(),
     senha: z.string(),
@@ -52,6 +52,14 @@ export const createPoliticSchema = z.object({
     instagram: z.string().or(z.null()).default(null),
 })
 
+
 export const searchPoliticSchema = z.object({
     id: z.string().uuid()
+})
+
+
+export const updatePoliticSchema = politicSchema.merge(searchPoliticSchema)
+
+export const collectionSchema =  z.object({
+    id: z.string()
 })

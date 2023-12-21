@@ -5,17 +5,20 @@ import {getAllPolitics} from "../database/querys/GET/getAllPolitics";
 import {createPolitic} from "../database/querys/POST/createPolitc";
 
 import {upload} from "../multer/multerConfig";
-import {createPoliticSchema, loginQuerySchema, searchPoliticSchema,} from "../@types/schemas";
+import {
+    politicSchema,
+    loginQuerySchema,
+    searchPoliticSchema,
+    collectionSchema,
+    updatePoliticSchema,
+} from "../@types/schemas";
 import {storeFile} from "../database/querys/POST/storeFile";
 import {loginPolitic} from "../database/querys/POST/loginPolitic";
 import {createQrCode} from "../utilities/createQrCode";
+import {changePoliticData} from "../database/querys/POST/changePoliticData";
 
 
 export async function politicsRoute(app: FastifyInstance){
-    app.get('/teste', ()=>{
-        return "teste!"
-    })
-
     // GET de todos os políticos
     app.get(`/`, async (request, reply)=>{
         const docs = await getAllPolitics().catch(()=>{
@@ -90,7 +93,7 @@ export async function politicsRoute(app: FastifyInstance){
             ])
         },
         async (request, reply)=>{
-            const body = createPoliticSchema.parse(request.body)
+            const body = politicSchema.parse(request.body)
             const id = crypto.randomUUID()
 
             const {qrCodeURl, URL} = await createQrCode(id)
@@ -125,5 +128,57 @@ export async function politicsRoute(app: FastifyInstance){
             return {
                 message: "político criado certinho"
             }
+    })
+
+    app.put('/updateData/:id', async (request, reply)=>{
+        const body = updatePoliticSchema.safeParse(request.body)
+        const param = collectionSchema.safeParse(request.params)
+
+        if(!body.success){
+            return reply.status(400)
+                        .send({
+                message: "Payload com dados errados."
+            })
+        }
+
+        if(!param.success){
+            return reply.status(400)
+                .send({
+                    message: "Id de usuário fornecido errado."
+                })
+        }
+
+
+        const { data } = body
+
+        const newInfo = {
+            email: data.email.toLowerCase(),
+            nome: data.nome,
+            senha: data.senha,
+            telefone: data.telefone,
+            siteInstitucional: data.siteInstitucional,
+            facebook: data.facebook,
+            linkedin: data.linkedin,
+            instagram: data.instagram,
+            youtube: data.youtube,
+            partido: {
+                nome: data.partido_nome,
+                sigla: data.partido_sigla
+            },
+        } as const
+
+        try{
+            await changePoliticData(newInfo, param.data.id)
+
+            const updatedPolitic = await getPoliticById(data.id)
+
+            return reply.status(202).send(updatedPolitic)
+        }catch (e) {
+            if(e instanceof Error)
+                return reply.status(500).send({
+                    message: "Erro no cadastro de informacões..",
+                    error: e.message
+            })
+        }
     })
 }

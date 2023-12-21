@@ -5,6 +5,7 @@ import multer from 'fastify-multer'
 import {votersRoute} from "./routes/voters";
 
 
+
 export const app = fastify();
 
 app.register(cors, {
@@ -31,10 +32,6 @@ app.register(votersRoute,{
 })
 
 
-app.get('/teste', ()=>{
-    return "ficarei calvo aos 25 assim"
-})
-
 // Startando o servidor
 
 app.listen({
@@ -44,3 +41,20 @@ app.listen({
     console.log(`Server is currently running.`)
 })
 
+
+
+// const fs = require('node:fs');
+// async function gettudo(){
+//     const response = await getAllRegisteredVoters("eQaz2JqN5nyIOD3WElce", 0)
+//
+//
+//     // fs.writeFile('C:\\Users\\itall\\OneDrive\\Área de Trabalho\\test.txt', JSON.stringify(response), (err: any) => {
+//     //     if (err) {
+//     //         console.error(err);
+//     //     }
+//     //     // file written successfully
+//     //     console.log('foi')
+//     // });
+// }
+//
+// // gettudo()
